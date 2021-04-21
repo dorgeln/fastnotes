@@ -31,7 +31,7 @@ jupyter-client==6.2.0; python_full_version >= "3.6.1" and python_version >= "3.6
 jupyter-core==4.7.1; python_full_version >= "3.6.1" and python_version >= "3.6"
 jupyter-packaging==0.9.2; python_version >= "3.6"
 jupyter-server-proxy==3.0.2; python_version >= "3.6"
-jupyter-server==1.6.3; python_version >= "3.6"
+jupyter-server==1.6.4; python_version >= "3.6"
 jupyterlab-pygments==0.1.2; python_version >= "3.6"
 jupyterlab-server==2.4.0; python_version >= "3.6"
 jupyterlab==3.0.14; python_version >= "3.6"
