@@ -7,10 +7,10 @@ PYTHON_VERSION := 3.8.8
 PYTHON_REQUIRED := ">=3.8,<3.9"
 PYTHON_TAG := python-${PYTHON_VERSION}
 NPM_PKG := vega-lite vega-cli canvas configurable-http-proxy
-PYTHON_BASE := numpy pandas jupyterlab altair altair_saver nbgitpuller jupyter-server-proxy
-PYTHON_EXTRA := cysgp4 vega_datasets
+PYTHON_BASE := numpy pandas jupyterlab altair altair_saver nbgitpuller jupyter-server-proxy cysgp4 Pillow jupyterlab-spellchecker pyyaml toml
+PYTHON_EXTRA := vega_datasets
 
-build:
+build: deps
 	docker image build --target base --build-arg VERSION=${VERSION} --build-arg PYTHON_VERSION=${PYTHON_VERSION} --build-arg DOCKER_USER=${DOCKER_USER} --build-arg DOCKER_REPO=${DOCKER_REPO}  -t ${DOCKER_USER}/${DOCKER_REPO}:base-${VERSION} . && \
 	docker image build --target devel --build-arg VERSION=${VERSION} --build-arg PYTHON_VERSION=${PYTHON_VERSION} --build-arg DOCKER_USER=${DOCKER_USER} --build-arg DOCKER_REPO=${DOCKER_REPO}  -t ${DOCKER_USER}/${DOCKER_REPO}:devel-${VERSION} . && \
     docker image build --target deploy --build-arg VERSION=${VERSION} --build-arg PYTHON_VERSION=${PYTHON_VERSION} --build-arg DOCKER_USER=${DOCKER_USER} --build-arg DOCKER_REPO=${DOCKER_REPO}  -t ${DOCKER_USER}/${DOCKER_REPO}:${VERSION} .
@@ -30,3 +30,28 @@ deps:
 clean:
 	-rm package.json package-lock.json pyproject.toml poetry.lock requirements.txt requirements-base.txt  requirements-extra.txt
 
+
+tag:
+	-while IFS=$$'=' read -r pkg version; do \
+		version=$${version//^}; \
+		version=$${version//'"'}; \
+		version=$${version//' '}; \
+		pkg=$${pkg//' '}; \
+		case $$version in \
+			'') pkg='';version=''  ;;\
+			*[a-zA-Z=]*) pkg='';version='' ;; \
+    		*) ;; \
+		esac; \
+		[ ! $$pkg  = '' ] && docker tag ${DOCKER_USER}/${DOCKER_REPO}:${VERSION} ${DOCKER_USER}/${DOCKER_REPO}:$$pkg-$$version ; \
+	done < pyproject.toml
+	docker tag ${DOCKER_USER}/${DOCKER_REPO}:${VERSION} ${DOCKER_USER}/${DOCKER_REPO}:latest
+
+push: build
+	docker image push ${DOCKER_USER}/${DOCKER_REPO}:${VERSION}
+
+
+push-all: clean-tags build tag
+	docker image push -a ${DOCKER_USER}/${DOCKER_REPO}
+
+clean-tags:
+	docker images | grep dorgeln/datascience | awk '{system("docker rmi " "'"dorgeln/datascience:"'" $2)}'

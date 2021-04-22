@@ -14,7 +14,7 @@ ARG NB_USER="jovyan"
 ARG NB_UID="1000"
 ARG NB_GID="100"
 
-RUN apk add --no-cache sudo curl bash git ttf-liberation nodejs npm gettext libffi libzmq sqlite-libs openblas libxml2-utils openssl tar zlib ncurses bzip2 xz libffi pixman cairo pango openjpeg librsvg giflib libpng openblas-ilp64 lapack libxml2 zeromq libnsl libtirpc
+RUN apk add --no-cache sudo curl bash git ttf-liberation nodejs npm gettext libffi libzmq sqlite-libs openblas libxml2-utils openssl tar zlib ncurses bzip2 xz libffi pixman cairo pango openjpeg librsvg giflib libpng openblas-ilp64 lapack libxml2 zeromq libnsl libtirpc  libjpeg-turbo tiff freetype libwebp libimagequant lcms2
 
 RUN adduser --disabled-password  -u ${NB_UID} -G users ${NB_USER} && \
     addgroup -g ${NB_UID}  ${NB_USER} && \
@@ -58,7 +58,8 @@ ENV PYTHONUNBUFFERED=true \
     XDG_CACHE_HOME=/home/${NB_USER}/.cache \
     MAKE_OPTS="-j8" \
     CONFIGURE_OPTS="--enable-shared --enable-optimizations --with-computed-gotos" \
-    NPY_USE_BLAS_ILP64=1
+    NPY_USE_BLAS_ILP64=1 \
+    MAX_CONCURRENCY=8
 
 WORKDIR ${HOME}
 RUN ln -s ${NODE_PATH}  ${HOME}/node_modules
@@ -74,7 +75,7 @@ EXPOSE 8888
 FROM ${DOCKER_USER}/${DOCKER_REPO}:base-${VERSION} as devel
 ARG PYTHON_VERSION
 
-RUN sudo apk add --update alpine-sdk expat-dev openssl-dev zlib-dev ncurses-dev bzip2-dev xz-dev sqlite-dev libffi-dev linux-headers readline-dev pixman-dev cairo-dev pango-dev openjpeg-dev librsvg-dev giflib-dev libpng-dev openblas-dev lapack-dev gfortran libxml2-dev zeromq-dev gnupg tar xz expat-dev gdbm-dev libnsl-dev libtirpc-dev pax-utils util-linux-dev xz-dev zlib-dev
+RUN sudo apk add --update alpine-sdk expat-dev openssl-dev zlib-dev ncurses-dev bzip2-dev xz-dev sqlite-dev libffi-dev linux-headers readline-dev pixman-dev cairo-dev pango-dev openjpeg-dev librsvg-dev giflib-dev libpng-dev openblas-dev lapack-dev gfortran libxml2-dev zeromq-dev gnupg tar xz expat-dev gdbm-dev libnsl-dev libtirpc-dev pax-utils util-linux-dev xz-dev zlib-dev libjpeg-turbo-dev tiff-dev libwebp-dev libimagequant-dev lcms2-dev
 
 WORKDIR ${PYENV_ROOT}
 RUN pyenv install -v ${PYTHON_VERSION} && pyenv global ${PYTHON_VERSION}
