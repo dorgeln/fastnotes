@@ -8,7 +8,7 @@ PYTHON_REQUIRED := ">=3.8,<3.9"
 PYTHON_TAG := python-${PYTHON_VERSION}
 NPM_PKG := vega-lite vega-cli canvas configurable-http-proxy
 PYTHON_BASE := numpy pandas jupyterlab altair altair_saver nbgitpuller jupyter-server-proxy cysgp4 Pillow jupyterlab-spellchecker pyyaml toml
-PYTHON_EXTRA := vega_datasets
+PYTHON_EXTRA := vega_datasets 
 
 build: deps
 	docker image build --target base --build-arg VERSION=${VERSION} --build-arg PYTHON_VERSION=${PYTHON_VERSION} --build-arg DOCKER_USER=${DOCKER_USER} --build-arg DOCKER_REPO=${DOCKER_REPO}  -t ${DOCKER_USER}/${DOCKER_REPO}:base-${VERSION} . && \
