@@ -1,19 +1,18 @@
 .ONESHELL:
 SHELL := /bin/bash
-VERSION := 0.0.16
+VERSION := 0.0.17
 DOCKER_USER := dorgeln
 DOCKER_REPO := fastnotes
 PYTHON_VERSION := 3.8.8
 PYTHON_REQUIRED := ">=3.8,<3.9"
 PYTHON_TAG := python-${PYTHON_VERSION}
 NPM_PKG := vega-lite vega-cli canvas configurable-http-proxy
-ALPINE_BASE := sudo bash curl git git-lfs ttf-liberation nodejs npm gettext libffi libzmq sqlite-libs openblas libxml2-utils openssl tar zlib ncurses bzip2 xz libffi pixman cairo pango openjpeg librsvg giflib libpng openblas-ilp64 lapack libxml2 zeromq libnsl libtirpc  libjpeg-turbo tiff freetype libwebp libimagequant lcms2
-ALPINE_DEVEL := build-base alpine-sdk g++ expat-dev openssl-dev zlib-dev ncurses-dev bzip2-dev xz-dev sqlite-dev libffi-dev linux-headers readline-dev pixman-dev cairo-dev pango-dev openjpeg-dev librsvg-dev giflib-dev libpng-dev openblas-dev lapack-dev gfortran libxml2-dev zeromq-dev gnupg tar xz expat-dev gdbm-dev libnsl-dev libtirpc-dev pax-utils util-linux-dev xz-dev zlib-dev libjpeg-turbo-dev tiff-dev libwebp-dev libimagequant-dev lcms2-dev cargo
-ALPINE_DEPLOY :=  neofetch
-PYTHON_BASE := Cython numpy pandas jupyterlab altair altair_saver nbgitpuller jupyter-server-proxy cysgp4 Pillow jupyterlab-spellchecker pyyaml toml matplotlib sshkernel jupyterlab-git
-PYTHON_EXTRA :=  asciinema ttygif cowsay lolcat
-PYTHON_DEPLOY := vega_datasets 
-
+ALPINE_BASE := sudo bash curl git git-lfs ttf-liberation nodejs npm gettext libffi libzmq sqlite-libs openblas openssl tar zlib ncurses bzip2 xz libffi pixman cairo pango openjpeg librsvg giflib libpng openblas-ilp64 lapack libxml2 zeromq libnsl libxslt libtirpc libjpeg-turbo tiff freetype libwebp libimagequant lcms2
+ALPINE_DEVEL := build-base alpine-sdk g++ expat-dev openssl-dev zlib-dev ncurses-dev bzip2-dev xz-dev sqlite-dev libffi-dev linux-headers readline-dev pixman-dev cairo-dev pango-dev openjpeg-dev librsvg-dev giflib-dev libpng-dev openblas-dev lapack-dev gfortran libxml2-dev zeromq-dev gnupg tar xz expat-dev gdbm-dev libnsl-dev libtirpc-dev pax-utils util-linux-dev xz-dev zlib-dev libjpeg-turbo-dev tiff-dev libwebp-dev libimagequant-dev lcms2-dev cargo libxml2-dev libxslt-dev boost-dev
+ALPINE_DEPLOY :=  neofetch chromium-chromedriver
+PYTHON_BASE := Cython numpy pandas jupyterlab altair altair_saver nbgitpuller jupyter-server-proxy cysgp4 Pillow jupyterlab-spellchecker pyyaml toml matplotlib sshkernel jupyterlab-git asciinema cowsay lolcat doit black flit bash_kernel docker GitPython sphinx ablog pydata_sphinx_theme  sphinx_panels jupyter-book
+PYTHON_EXTRA :=   jupyterlite ttygif nbdev # dvc jupyterlab-dvc
+PYTHON_DEPLOY = vega_datasets
 
 build: deps
 	docker image build --target base --build-arg VERSION=${VERSION} --build-arg PYTHON_VERSION=${PYTHON_VERSION} --build-arg DOCKER_USER=${DOCKER_USER} --build-arg DOCKER_REPO=${DOCKER_REPO}  -t ${DOCKER_USER}/${DOCKER_REPO}:base -t ${DOCKER_USER}/${DOCKER_REPO}:base-${VERSION} . 
@@ -55,7 +54,7 @@ deps:
 	[ -f alpine-deploy.pkg ] || echo ${ALPINE_DEPLOY} > alpine-deploy-${VERSION}.pkg
 
 clean:
-	-rm package*.json package-lock.json pyproject.toml poetry.lock requirements-base*.txt  requirements-extra*.txt requirements-deploy*.txt alpine-base*.pkg alpine-build*.pkg  alpine-deploy*.pkg 
+	-rm package*.json pyproject.toml poetry.lock requirements-base*.txt  requirements-extra*.txt requirements-deploy*.txt alpine-base*.pkg alpine-build*.pkg  alpine-deploy*.pkg 
 
 
 tag: build

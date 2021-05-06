@@ -2,7 +2,7 @@ ARG VERSION
 ARG DOCKER_USER
 ARG DOCKER_REPO
 
-FROM alpine:edge as base
+FROM alpine:latest as base
 
 ARG VERSION
 ARG PYTHON_VERSION
@@ -103,3 +103,4 @@ COPY alpine-deploy-${VERSION}.pkg alpine-deploy-${VERSION}.pkg
 RUN PKG=`cat alpine-deploy-${VERSION}.pkg` && echo "Installing ${PKG}" &&  sudo apk add --no-cache ${PKG}
 COPY --chown=${NB_USER} requirements-deploy-${VERSION}.txt requirements-deploy-${VERSION}.txt
 RUN pip install -vv -r requirements-deploy-${VERSION}.txt
+RUN python -m bash_kernel.install
